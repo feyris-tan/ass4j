@@ -1,2 +1,5 @@
 # Project exclude paths
 /target/
+*.iml
+src/test/resources/QueenMillennia*
+.idea
