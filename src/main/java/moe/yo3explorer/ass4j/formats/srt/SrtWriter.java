@@ -31,7 +31,7 @@ public class SrtWriter {
             }
             output.println("");
         }
-
+        output.flush();
     }
 
     public static void writeTo(SubtitleFile input, Writer writer)

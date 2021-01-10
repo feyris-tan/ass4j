@@ -151,7 +151,7 @@ public class Timecode
             case ADVANCED_SUBSTATION:
                 return String.format("%d:%02d:%02d.%02d",hour,minute,second,fraction);
             case WEBVTT:
-                return String.format("%d:%02d:%02d.%03d",hour,minute,second,fraction * 10);
+                return String.format("%02d:%02d:%02d,%03d",hour,minute,second,fraction * 10);
             default:
                 throw new SubtitleException("Unknown timecode format: " + format.toString());
         }
