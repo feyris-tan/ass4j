@@ -15,6 +15,7 @@ public class VttReader
     public static SubtitleFile parseVttFile(@NotNull BufferedReader reader) throws IOException {
 
         SubtitleFile subtitleFile = new SubtitleFile();
+        subtitleFile.getScriptinfo().autoSetReasonableDefaults();
         Style style = Style.createReasonableDefault();
         subtitleFile.getStyles().add(style);
 

@@ -46,6 +46,13 @@ public final class AssWriter {
         writeTo(input,new OutputStreamWriter(stream));
     }
 
+    public static void writeTo(SubtitleFile input, File output) throws IOException {
+        FileOutputStream fos = new FileOutputStream(output,false);
+        writeTo(input,fos);
+        fos.flush();
+        fos.close();
+    }
+
     public static String writeToString(SubtitleFile input)
     {
         StringWriter stringWriter = new StringWriter();

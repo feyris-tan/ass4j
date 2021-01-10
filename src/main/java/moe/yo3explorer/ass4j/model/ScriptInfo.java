@@ -1,6 +1,12 @@
 package moe.yo3explorer.ass4j.model;
 
 public class ScriptInfo {
+
+    public void autoSetReasonableDefaults()
+    {
+        wrapStyle = WrapStyle.SMART_WRAPPING_TOP_LINE;
+    }
+
     private String title;
     private String scriptType;
     private WrapStyle wrapStyle;
