@@ -1,22 +1,21 @@
-package moe.yo3explorer.ass4j;
+package moe.yo3explorer.ass4j.formats.ass;
 
+import moe.yo3explorer.ass4j.SegmentableStringContainer;
+import moe.yo3explorer.ass4j.SubtitleException;
+import moe.yo3explorer.ass4j.SubtitleFile;
 import moe.yo3explorer.ass4j.model.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
+import java.util.*;
 
 public final class AssReader
 {
     private AssReader() {}
 
     @NotNull
-    public static AssFile parseAssFile(@NotNull BufferedReader reader) throws IOException {
-        AssFile assFile = new AssFile();
+    public static SubtitleFile parseAssFile(@NotNull BufferedReader reader) throws IOException {
+        SubtitleFile subtitleFile = new SubtitleFile();
         while (true)
         {
             String s = reader.readLine();
@@ -28,37 +27,33 @@ public final class AssReader
                 continue;
             if (s.equals("[Script Info]"))
             {
-                parseScriptInfo(assFile,reader);
+                parseScriptInfo(subtitleFile,reader);
                 continue;
             }
             if (s.equals("[Aegisub Project Garbage]"))
             {
-                parseAegisubProjectGarbage(assFile,reader);
+                parseAegisubProjectGarbage(subtitleFile,reader);
                 continue;
             }
             if (s.equals(""))
                 continue;
             if (s.equals("[V4+ Styles]"))
             {
-                parseStyles(assFile,reader);
+                parseStyles(subtitleFile,reader);
                 continue;
             }
             if (s.equals("[Events]"))
             {
-                parseEvents(assFile,reader);
+                parseEvents(subtitleFile,reader);
                 continue;
             }
 
-            throw new AssException(String.format("I do not understand this line: " + s));
+            throw new SubtitleException(String.format("I do not understand this line: " + s));
         }
-        return assFile;
+        return subtitleFile;
     }
 
-    private static void parseEvents(@NotNull AssFile assFile, BufferedReader reader) throws IOException {
-        if (assFile.events == null)
-        {
-            assFile.events = new LinkedList<Event>();
-        }
+    private static void parseEvents(@NotNull SubtitleFile subtitleFile, BufferedReader reader) throws IOException {
         while (true)
         {
             String s = reader.readLine();
@@ -72,8 +67,8 @@ public final class AssReader
                 SegmentableStringContainer container = new SegmentableStringContainer(getValue(s));
                 Event childEvent = new Event();
                 childEvent.setEventType(EventType.DIALOGUE);
-                parseEvent(container,childEvent,assFile.styles);
-                assFile.events.add(childEvent);
+                parseEvent(container,childEvent, subtitleFile.getStyles());
+                subtitleFile.getEvents().add(childEvent);
                 continue;
             }
             if (s.startsWith("Comment:"))
@@ -81,8 +76,8 @@ public final class AssReader
                 SegmentableStringContainer container = new SegmentableStringContainer(getValue(s));
                 Event childEvent = new Event();
                 childEvent.setEventType(EventType.COMMENT);
-                parseEvent(container,childEvent, assFile.styles);
-                assFile.events.add(childEvent);
+                parseEvent(container,childEvent, subtitleFile.getStyles());
+                subtitleFile.getEvents().add(childEvent);
                 continue;
             }
             if (s.equals(""))
@@ -93,7 +88,7 @@ public final class AssReader
         }
     }
 
-    private static void parseEvent(@NotNull SegmentableStringContainer input, @NotNull Event output, ArrayList<Style> styles)
+    private static void parseEvent(@NotNull SegmentableStringContainer input, @NotNull Event output, List<Style> styles)
     {
         //Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         output.setLayer(input.readSegmentAsInt());
@@ -127,11 +122,7 @@ public final class AssReader
         return firstStyle;
     }
 
-    private static void parseStyles(@NotNull AssFile assFile, BufferedReader reader) throws IOException {
-        if (assFile.styles == null)
-        {
-            assFile.styles = new ArrayList<Style>();
-        }
+    private static void parseStyles(@NotNull SubtitleFile subtitleFile, @NotNull BufferedReader reader) throws IOException {
         while (true)
         {
             String line = reader.readLine();
@@ -167,20 +158,16 @@ public final class AssReader
                 childStyle.setMarginR(ssc.readSegmentAsInt());
                 childStyle.setMarginV(ssc.readSegmentAsInt());
                 childStyle.setEncoding(ssc.readSegmentAsEncoding());
-                assFile.styles.add(childStyle);
+                subtitleFile.getStyles().add(childStyle);
                 continue;
             }
             if (line.equals(""))
                 return;
-            throw new AssException("I don't understand this line: " + line);
+            throw new SubtitleException("I don't understand this line: " + line);
         }
     }
 
-    private static void parseAegisubProjectGarbage(@NotNull AssFile assFile, BufferedReader reader) throws IOException {
-        if (assFile.aegisubProjectGarbage == null)
-        {
-            assFile.aegisubProjectGarbage = new AegisubProjectGarbage();
-        }
+    private static void parseAegisubProjectGarbage(@NotNull SubtitleFile subtitleFile, BufferedReader reader) throws IOException {
         while (true)
         {
             String s = reader.readLine();
@@ -188,69 +175,65 @@ public final class AssReader
                 return;
             if (s.startsWith("Active Line:"))
             {
-                assFile.aegisubProjectGarbage.setActiveLine(getValueAsInt(s));
+                subtitleFile.getAegisubProjectGarbage().setActiveLine(getValueAsInt(s));
                 continue;
             }
             if (s.startsWith("Last Style Storage:"))
             {
-                assFile.aegisubProjectGarbage.setLastStyleStorage(getValue(s));
+                subtitleFile.getAegisubProjectGarbage().setLastStyleStorage(getValue(s));
                 continue;
             }
             if (s.startsWith("Audio File:"))
             {
-                assFile.aegisubProjectGarbage.setAudioFile(getValue(s));
+                subtitleFile.getAegisubProjectGarbage().setAudioFile(getValue(s));
                 continue;
             }
             if (s.startsWith("Video File:"))
             {
-                assFile.aegisubProjectGarbage.setVideoFile(getValue(s));
+                subtitleFile.getAegisubProjectGarbage().setVideoFile(getValue(s));
                 continue;
             }
             if (s.startsWith("Video AR Value:"))
             {
-                assFile.aegisubProjectGarbage.setVideoArValue(getValueAsDouble(s));
+                subtitleFile.getAegisubProjectGarbage().setVideoArValue(getValueAsDouble(s));
                 continue;
             }
             if (s.startsWith("Scroll Position:"))
             {
-                assFile.aegisubProjectGarbage.setScrollPosition(getValueAsInt(s));
+                subtitleFile.getAegisubProjectGarbage().setScrollPosition(getValueAsInt(s));
                 continue;
             }
             if (s.startsWith("Video Position:"))
             {
-                assFile.aegisubProjectGarbage.setVideoPosition(getValueAsInt(s));
+                subtitleFile.getAegisubProjectGarbage().setVideoPosition(getValueAsInt(s));
                 continue;
             }
-            throw new AssException(String.format("I do not understand this line: " + s));
+            throw new SubtitleException(String.format("I do not understand this line: " + s));
         }
     }
 
-    private static void parseScriptInfo(@NotNull AssFile result, @NotNull BufferedReader reader) throws IOException {
-        if (result.scriptinfo == null)
-        {
-            result.scriptinfo = new ScriptInfo();
-        }
+    private static void parseScriptInfo(@NotNull SubtitleFile result, @NotNull BufferedReader reader) throws IOException {
         while (true) {
             String s = reader.readLine();
             if (s.startsWith(";"))
                 continue;
             if (s.startsWith("Title:")) {
-                result.scriptinfo.setTitle(getValue(s));
+                result.getScriptinfo().setTitle(getValue(s));
                 continue;
             }
             if (s.startsWith("ScriptType:"))
             {
-                result.scriptinfo.setScriptType(getValue(s));
+                result.getScriptinfo().setScriptType(getValue(s));
                 continue;
             }
             if (s.startsWith("WrapStyle:"))
             {
-                result.scriptinfo.setWrapStyle(WrapStyle.values()[getValueAsInt(s)]);
+                result.getScriptinfo().setWrapStyle(WrapStyle.values()[getValueAsInt(s)]);
                 continue;
             }
             if (s.startsWith("ScaledBorderAndShadow:"))
             {
-                result.scriptinfo.setScaledBorderAndShadow(getValueAsBoolean(s));
+                result.getScriptinfo().setScaledBorderAndShadow(getValueAsBoolean(s));
                 continue;
             }
             if (s.startsWith("YCbCr Matrix:"))
@@ -258,60 +241,60 @@ public final class AssReader
                 String matrixName = getValue(s);
                 Optional<YCbCrMatrix> yCbCrMatrix = Arrays.stream(YCbCrMatrix.values()).filter(x -> x.getName().equals(matrixName)).findFirst();
                 if (!yCbCrMatrix.isPresent())
-                    throw new AssException("Unknown YCbCr Matrix: " + matrixName);
-                result.scriptinfo.setYCbCrMatrix(yCbCrMatrix.get());
+                    throw new SubtitleException("Unknown YCbCr Matrix: " + matrixName);
+                result.getScriptinfo().setYCbCrMatrix(yCbCrMatrix.get());
                 continue;
             }
             if (s.startsWith("PlayResX:"))
             {
-                result.scriptinfo.setPlayResX(getValueAsInt(s));
+                result.getScriptinfo().setPlayResX(getValueAsInt(s));
                 continue;
             }
             if (s.startsWith("PlayResY:"))
             {
-                result.scriptinfo.setPlayResY(getValueAsInt(s));
+                result.getScriptinfo().setPlayResY(getValueAsInt(s));
                 continue;
             }
             if (s.startsWith("Original Script:"))
             {
-                result.scriptinfo.setOriginalScript(getValue(s));
+                result.getScriptinfo().setOriginalScript(getValue(s));
                 continue;
             }
             if (s.startsWith("Original Timing:"))
             {
-                result.scriptinfo.setOriginalTiming(getValue(s));
+                result.getScriptinfo().setOriginalTiming(getValue(s));
                 continue;
             }
             if (s.equals(""))
             {
-                if (result.scriptinfo.isContainsData())             /* Workaround for MEDUSA */
+                if (result.getScriptinfo().isContainsData())             /* Workaround for MEDUSA */
                     break;
                 else
                     continue;
             }
             if (s.startsWith("Original Translation:"))
             {
-                result.scriptinfo.setOriginalTranslation(getValue(s));
+                result.getScriptinfo().setOriginalTranslation(getValue(s));
                 continue;
             }
             if (s.startsWith("Original Editing:"))
             {
-                result.scriptinfo.setOriginalEditing(getValue(s));
+                result.getScriptinfo().setOriginalEditing(getValue(s));
                 continue;
             }
             if (s.startsWith("Synch Point:"))
             {
-                result.scriptinfo.setSynchPoint(getValue(s));
+                result.getScriptinfo().setSynchPoint(getValue(s));
                 continue;
             }
             if (s.startsWith("Script Updated By:"))
             {
-                result.scriptinfo.setScriptUpdatedBy(getValue(s));
+                result.getScriptinfo().setScriptUpdatedBy(getValue(s));
                 continue;
             }
             if (s.startsWith("Update Details:"))
             {
-                result.scriptinfo.setUpdateDetails(getValue(s));
+                result.getScriptinfo().setUpdateDetails(getValue(s));
                 continue;
             }
             if (s.startsWith("Collisions:"))
@@ -319,51 +302,51 @@ public final class AssReader
                 String collisionsName = getValue(s);
                 Optional<Collisions> first = Arrays.stream(Collisions.values()).filter(x -> x.getNormal().equals(collisionsName)).findFirst();
                 if (first.isEmpty())
-                    throw new AssException("Unknown collision method: " + collisionsName);
-                result.scriptinfo.setCollisions(first.get());
+                    throw new SubtitleException("Unknown collision method: " + collisionsName);
+                result.getScriptinfo().setCollisions(first.get());
                 continue;
             }
             if (s.startsWith("PlayDepth:"))
             {
-                result.scriptinfo.setPlayDepth(getValueAsInt(s));
+                result.getScriptinfo().setPlayDepth(getValueAsInt(s));
                 continue;
             }
             if (s.startsWith("Timer:"))
             {
-                result.scriptinfo.setTimer(getValueAsDouble(s));
+                result.getScriptinfo().setTimer(getValueAsDouble(s));
                 continue;
             }
             if (s.startsWith("Video Aspect Ratio:"))
             {
-                result.scriptinfo.setVideoAspectRatio(getValue(s));
+                result.getScriptinfo().setVideoAspectRatio(getValue(s));
                 continue;
             }
             if (s.startsWith("Video Zoom:"))
             {
-                result.scriptinfo.setVideoZoom(getValueAsDouble(s));
+                result.getScriptinfo().setVideoZoom(getValueAsDouble(s));
                 continue;
             }
             if (s.startsWith("Video Position:"))
             {
-                result.scriptinfo.setVideoPosition(getValueAsDouble(s));
+                result.getScriptinfo().setVideoPosition(getValueAsDouble(s));
                 continue;
             }
             if (s.startsWith("Audio File:"))
             {
-                result.scriptinfo.setAudioFile(getValue(s));
+                result.getScriptinfo().setAudioFile(getValue(s));
                 continue;
             }
             if (s.startsWith("Video File:"))
             {
-                result.scriptinfo.setVideoFile(getValue(s));
+                result.getScriptinfo().setVideoFile(getValue(s));
                 continue;
             }
             if (s.startsWith("Last Style Storage:"))
             {
-                result.scriptinfo.setLastStyleStorage(getValue(s));
+                result.getScriptinfo().setLastStyleStorage(getValue(s));
                 continue;
             }
-            throw new AssException(String.format("I do not understand this line: " + s));
+            throw new SubtitleException(String.format("I do not understand this line: " + s));
         }
     }
 
@@ -402,33 +385,33 @@ public final class AssReader
     }
 
     @NotNull
-    public static AssFile parseAssFile(Reader reader) throws IOException {
+    public static SubtitleFile parseAssFile(Reader reader) throws IOException {
         BufferedReader br = new BufferedReader(reader);
-        AssFile result = parseAssFile(br);
+        SubtitleFile result = parseAssFile(br);
         br.close();
         return result;
     }
 
     @NotNull
-    public static AssFile parseAssFile(InputStream inputStream) throws IOException {
+    public static SubtitleFile parseAssFile(InputStream inputStream) throws IOException {
         InputStreamReader isr = new InputStreamReader(inputStream);
-        AssFile result = parseAssFile(isr);
+        SubtitleFile result = parseAssFile(isr);
         isr.close();
         return result;
     }
 
     @NotNull
-    public static AssFile parseAssFile(byte[] buffer) throws IOException {
+    public static SubtitleFile parseAssFile(byte[] buffer) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-        AssFile result = parseAssFile(bais);
+        SubtitleFile result = parseAssFile(bais);
         bais.close();
         return result;
     }
 
     @NotNull
-    public static AssFile parseAssFile(File file) throws IOException {
+    public static SubtitleFile parseAssFile(File file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
-        AssFile result = parseAssFile(fis);
+        SubtitleFile result = parseAssFile(fis);
         fis.close();
         return result;
     }

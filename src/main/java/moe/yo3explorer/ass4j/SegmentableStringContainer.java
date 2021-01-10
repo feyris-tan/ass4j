@@ -60,7 +60,7 @@ public class SegmentableStringContainer
             case "-1": return true;
             case "0": return false;
             default:
-                throw new AssException("Don't know what that means: " + s);
+                throw new SubtitleException("Don't know what that means: " + s);
         }
     }
 
@@ -72,7 +72,7 @@ public class SegmentableStringContainer
         int i = readSegmentAsInt();
         Optional<Encoding> first = Arrays.stream(Encoding.values()).filter(x -> x.getId() == i).findFirst();
         if (first.isEmpty())
-            throw new AssException("Unknown encoding ID: " + i);
+            throw new SubtitleException("Unknown encoding ID: " + i);
         return first.get();
     }
 

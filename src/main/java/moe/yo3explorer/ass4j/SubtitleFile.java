@@ -7,7 +7,15 @@ import moe.yo3explorer.ass4j.model.Style;
 
 import java.util.*;
 
-public class AssFile {
+public class SubtitleFile {
+
+    public SubtitleFile()
+    {
+        styles = new ArrayList<>();
+        events = new LinkedList<>();
+        aegisubProjectGarbage = new AegisubProjectGarbage();
+        scriptinfo = new ScriptInfo();
+    }
 
     ArrayList<Style> styles;
     LinkedList<Event> events;
@@ -16,12 +24,12 @@ public class AssFile {
 
     public List<Style> getStyles()
     {
-        return Collections.unmodifiableList(styles);
+        return styles;
     }
 
     public List<Event> getEvents()
     {
-        return Collections.unmodifiableList(events);
+        return events;
     }
 
     public AegisubProjectGarbage getAegisubProjectGarbage() {
