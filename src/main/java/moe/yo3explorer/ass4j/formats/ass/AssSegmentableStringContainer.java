@@ -1,18 +1,22 @@
-package moe.yo3explorer.ass4j;
+package moe.yo3explorer.ass4j.formats.ass;
 
+import moe.yo3explorer.ass4j.SubtitleException;
 import moe.yo3explorer.ass4j.model.Color;
 import moe.yo3explorer.ass4j.model.Encoding;
 import moe.yo3explorer.ass4j.model.Timecode;
+import moe.yo3explorer.ass4j.model.TimecodeFormat;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-public class SegmentableStringContainer
+public class AssSegmentableStringContainer
 {
     private String contained;
+    private final TimecodeFormat tcFormat;
 
-    public SegmentableStringContainer(String contained) {
+    public AssSegmentableStringContainer(String contained, TimecodeFormat tcFormat) {
         this.contained = contained;
+        this.tcFormat = tcFormat;
     }
 
     public String readSegment()
@@ -78,6 +82,6 @@ public class SegmentableStringContainer
 
     public Timecode readSegmentAsTimecode()
     {
-        return new Timecode(readSegment());
+        return new Timecode(readSegment(),tcFormat);
     }
 }

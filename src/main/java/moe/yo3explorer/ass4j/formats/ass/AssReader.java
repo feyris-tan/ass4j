@@ -1,6 +1,5 @@
 package moe.yo3explorer.ass4j.formats.ass;
 
-import moe.yo3explorer.ass4j.SegmentableStringContainer;
 import moe.yo3explorer.ass4j.SubtitleException;
 import moe.yo3explorer.ass4j.SubtitleFile;
 import moe.yo3explorer.ass4j.model.*;
@@ -53,7 +52,7 @@ public final class AssReader
         return subtitleFile;
     }
 
-    private static void parseEvents(@NotNull SubtitleFile subtitleFile, BufferedReader reader) throws IOException {
+    private static void parseEvents(@NotNull SubtitleFile subtitleFile, @NotNull BufferedReader reader) throws IOException {
         while (true)
         {
             String s = reader.readLine();
@@ -64,7 +63,7 @@ public final class AssReader
                 continue;
             if (s.startsWith("Dialogue:"))
             {
-                SegmentableStringContainer container = new SegmentableStringContainer(getValue(s));
+                AssSegmentableStringContainer container = new AssSegmentableStringContainer(getValue(s),TimecodeFormat.ADVANCED_SUBSTATION);
                 Event childEvent = new Event();
                 childEvent.setEventType(EventType.DIALOGUE);
                 parseEvent(container,childEvent, subtitleFile.getStyles());
@@ -73,7 +72,7 @@ public final class AssReader
             }
             if (s.startsWith("Comment:"))
             {
-                SegmentableStringContainer container = new SegmentableStringContainer(getValue(s));
+                AssSegmentableStringContainer container = new AssSegmentableStringContainer(getValue(s),TimecodeFormat.ADVANCED_SUBSTATION);
                 Event childEvent = new Event();
                 childEvent.setEventType(EventType.COMMENT);
                 parseEvent(container,childEvent, subtitleFile.getStyles());
@@ -88,7 +87,7 @@ public final class AssReader
         }
     }
 
-    private static void parseEvent(@NotNull SegmentableStringContainer input, @NotNull Event output, List<Style> styles)
+    private static void parseEvent(@NotNull AssSegmentableStringContainer input, @NotNull Event output, List<Style> styles)
     {
         //Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         output.setLayer(input.readSegmentAsInt());
@@ -130,7 +129,7 @@ public final class AssReader
                 continue;
             if (line.startsWith("Style: "))
             {
-                SegmentableStringContainer ssc = new SegmentableStringContainer(getValue(line));
+                AssSegmentableStringContainer ssc = new AssSegmentableStringContainer(getValue(line),TimecodeFormat.ADVANCED_SUBSTATION);
                 Style childStyle = new Style();
                 //Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour,
                 childStyle.setName(ssc.readSegment());
@@ -167,7 +166,7 @@ public final class AssReader
         }
     }
 
-    private static void parseAegisubProjectGarbage(@NotNull SubtitleFile subtitleFile, BufferedReader reader) throws IOException {
+    private static void parseAegisubProjectGarbage(@NotNull SubtitleFile subtitleFile, @NotNull BufferedReader reader) throws IOException {
         while (true)
         {
             String s = reader.readLine();

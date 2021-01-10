@@ -1,17 +1,25 @@
 package moe.yo3explorer.ass4j.model;
 
+import moe.yo3explorer.ass4j.SubtitleException;
 import org.jetbrains.annotations.NotNull;
 
 public class Timecode
 {
-    public Timecode(@NotNull String timecode)
+    public Timecode(@NotNull String timecode, @NotNull TimecodeFormat format)
     {
-        String[] split = timecode.split(":");
-        hour = Integer.parseInt(split[0]);
-        minute = Integer.parseInt(split[1]);
-        split = split[2].split("\\.");
-        second = Integer.parseInt(split[0]);
-        fraction = Integer.parseInt(split[1]);
+        switch (format)
+        {
+            case ADVANCED_SUBSTATION:
+                String[] split = timecode.split(":");
+                hour = Integer.parseInt(split[0]);
+                minute = Integer.parseInt(split[1]);
+                split = split[2].split("\\.");
+                second = Integer.parseInt(split[0]);
+                fraction = Integer.parseInt(split[1]);
+                break;
+            default:
+                throw new SubtitleException(String.format("Unknown timecode format: " + format));
+        }
     }
     public Timecode(int hour, int minute, int second, int fraction) {
         this.hour = hour;
