@@ -1,5 +1,6 @@
 import moe.yo3explorer.ass4j.SubtitleFile;
 import moe.yo3explorer.ass4j.formats.ass.AssWriter;
+import moe.yo3explorer.ass4j.formats.srt.SrtWriter;
 import moe.yo3explorer.ass4j.formats.vtt.VttReader;
 import org.junit.Assert;
 import org.junit.AssumptionViolatedException;
@@ -21,10 +22,10 @@ public class VttTest
         for (int i = 1; i < 14; i++)
         {
             String vttName = String.format("dillermand%d.vtt",i);
-            String assName = String.format("dillermand%d.ass",i);
+            String assName = String.format("dillermand%d.srt",i);
             InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(vttName);
             SubtitleFile subtitleFile = VttReader.parseVttFile(resourceAsStream);
-            AssWriter.writeTo(subtitleFile, new File(assName));
+            SrtWriter.writeTo(subtitleFile, new File(assName));
         }
     }
 

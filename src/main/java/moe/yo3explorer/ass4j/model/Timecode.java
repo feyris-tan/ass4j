@@ -29,18 +29,22 @@ public class Timecode
             default:
                 throw new SubtitleException(String.format("Unknown timecode format: " + format));
         }
+        this.format = format;
     }
-    public Timecode(int hour, int minute, int second, int fraction) {
+
+    public Timecode(int hour, int minute, int second, int fraction, TimecodeFormat format) {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
         this.fraction = fraction;
+        this.format = format;
     }
 
     private int hour;
     private int minute;
     private int second;
     private int fraction;
+    private TimecodeFormat format;
 
     public int getHour() {
         return hour;
@@ -132,8 +136,24 @@ public class Timecode
         return result;
     }
 
+    public TimecodeFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(TimecodeFormat format) {
+        this.format = format;
+    }
+
     @Override
     public String toString() {
-        return String.format("%d:%02d:%02d.%02d",hour,minute,second,fraction);
+        switch (format)
+        {
+            case ADVANCED_SUBSTATION:
+                return String.format("%d:%02d:%02d.%02d",hour,minute,second,fraction);
+            case WEBVTT:
+                return String.format("%d:%02d:%02d.%03d",hour,minute,second,fraction * 10);
+            default:
+                throw new SubtitleException("Unknown timecode format: " + format.toString());
+        }
     }
 }
