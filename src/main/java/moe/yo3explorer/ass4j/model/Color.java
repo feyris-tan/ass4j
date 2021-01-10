@@ -15,6 +15,19 @@ public class Color
         values = hexStringToIntArray(readSegment);
     }
 
+    public Color (int a, int r, int g, int b)
+    {
+        if (a > 255 || a < 0)
+            throw new IndexOutOfBoundsException("Color values must be between 0 and 255!");
+        if (r > 255 || r < 0)
+            throw new IndexOutOfBoundsException("Color values must be between 0 and 255!");
+        if (g > 255 || g < 0)
+            throw new IndexOutOfBoundsException("Color values must be between 0 and 255!");
+        if (b > 255 || b < 0)
+            throw new IndexOutOfBoundsException("Color values must be between 0 and 255!");
+        values = new int[] {a,r,g,b};
+    }
+
     private int getA() { return values[0]; }
     private int getR() { return values[1]; }
     private int getG() { return values[2]; }

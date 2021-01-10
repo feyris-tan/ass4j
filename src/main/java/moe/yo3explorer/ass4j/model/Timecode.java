@@ -17,6 +17,15 @@ public class Timecode
                 second = Integer.parseInt(split[0]);
                 fraction = Integer.parseInt(split[1]);
                 break;
+            case WEBVTT:
+                String[] split2 = timecode.split(":");
+                hour = Integer.parseInt(split2[0]);
+                minute = Integer.parseInt(split2[1]);
+                split2 = split2[2].split("\\.");
+                second = Integer.parseInt(split2[0]);
+                fraction = Integer.parseInt(split2[1]);
+                fraction /= 10;
+                break;
             default:
                 throw new SubtitleException(String.format("Unknown timecode format: " + format));
         }

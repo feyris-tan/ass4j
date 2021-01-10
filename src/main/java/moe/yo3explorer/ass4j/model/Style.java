@@ -1,6 +1,33 @@
 package moe.yo3explorer.ass4j.model;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Style {
+
+    @NotNull
+    public static Style createReasonableDefault()
+    {
+        Style defaultStyle = new Style();
+        defaultStyle.setName("Default");
+        defaultStyle.setFontName("Lucida Console");
+        defaultStyle.setFontSize(28);
+        defaultStyle.setPrimaryColor(new Color(0,0,255,255));
+        defaultStyle.setSecondaryColor(new Color(0,0,0,255));
+        defaultStyle.setOutlineColor(new Color(0,0,0,0));
+        defaultStyle.setBackColor(new Color(0,0,0,0));
+        defaultStyle.setScaleX(100.0);
+        defaultStyle.setScaleY(100.0);
+        defaultStyle.setBorderStyle(1);
+        defaultStyle.setOutline(2.0);
+        defaultStyle.setShadow(2.0);
+        defaultStyle.setAlignment(Alignment.LOWER_CENTER);
+        defaultStyle.setMarginL(10);
+        defaultStyle.setMarginR(10);
+        defaultStyle.setMarginV(10);
+        defaultStyle.setEncoding(Encoding.DEFAULT);
+        return defaultStyle;
+    }
+
     private String name;
     private String fontName;
     private double fontSize;
