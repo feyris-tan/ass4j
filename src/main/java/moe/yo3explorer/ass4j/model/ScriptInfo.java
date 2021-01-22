@@ -2,6 +2,10 @@ package moe.yo3explorer.ass4j.model;
 
 public class ScriptInfo {
 
+    private String sabbuVersion;
+    private int scrollPosition;
+    private int activeLine;
+
     public void autoSetReasonableDefaults()
     {
         wrapStyle = WrapStyle.SMART_WRAPPING_TOP_LINE;
@@ -239,5 +243,29 @@ public class ScriptInfo {
 
     public String getLastStyleStorage() {
         return lastStyleStorage;
+    }
+
+    public void setSabbuVersion(String sabbuVersion) {
+        this.sabbuVersion = sabbuVersion;
+    }
+
+    public String getSabbuVersion() {
+        return sabbuVersion;
+    }
+
+    public void setScrollPosition(int scrollPosition) {
+        this.scrollPosition = scrollPosition;
+    }
+
+    public int getScrollPosition() {
+        return scrollPosition;
+    }
+
+    public void setActiveLine(int activeLine) {
+        this.activeLine = activeLine;
+    }
+
+    public int getActiveLine() {
+        return activeLine;
     }
 }

@@ -8,6 +8,7 @@ public class AegisubProjectGarbage {
     private double videoArValue;
     private int scrollPosition;
     private int videoPosition;
+    private int arMode;
 
     public void setActiveLine(int activeLine) {
         this.activeLine = activeLine;
@@ -63,5 +64,13 @@ public class AegisubProjectGarbage {
 
     public int getVideoPosition() {
         return videoPosition;
+    }
+
+    public void setArMode(int arMode) {
+        this.arMode = arMode;
+    }
+
+    public int getArMode() {
+        return arMode;
     }
 }

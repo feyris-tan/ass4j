@@ -83,6 +83,8 @@ public final class AssReader
                 continue;
             if (s.length() < 3)
                 continue;
+            if (s.startsWith(";"))
+                continue;
             throw new RuntimeException("Don't know what this line means: " + s);
         }
     }
@@ -205,6 +207,16 @@ public final class AssReader
             if (s.startsWith("Video Position:"))
             {
                 subtitleFile.getAegisubProjectGarbage().setVideoPosition(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Video AR Mode:"))
+            {
+                subtitleFile.getAegisubProjectGarbage().setVideoArValue(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Video Zoom Percent:"))
+            {
+                subtitleFile.getScriptinfo().setVideoZoom(getValueAsDouble(s));
                 continue;
             }
             throw new SubtitleException(String.format("I do not understand this line: " + s));
@@ -343,6 +355,61 @@ public final class AssReader
             if (s.startsWith("Last Style Storage:"))
             {
                 result.getScriptinfo().setLastStyleStorage(getValue(s));
+                continue;
+            }
+            if (s.startsWith("SabbuVersion:"))
+            {
+                result.getScriptinfo().setSabbuVersion(getValue(s));
+                continue;
+            }
+            if (s.startsWith("Scroll Position:"))
+            {
+                result.getScriptinfo().setScrollPosition(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Active Line:"))
+            {
+                result.getScriptinfo().setActiveLine(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Video Zoom Percent:"))
+            {
+                result.getScriptinfo().setVideoZoom(getValueAsDouble(s));
+                continue;
+            }
+            if (s.startsWith("Audio URI:"))
+            {
+                result.getScriptinfo().setAudioFile(getValue(s));
+                continue;
+            }
+            if (s.startsWith("Aegisub Video Aspect Ratio:"))
+            {
+                result.getScriptinfo().setVideoAspectRatio(getValue(s));
+                continue;
+            }
+            if (s.startsWith("Aegisub Scroll Position:"))
+            {
+                result.getScriptinfo().setScrollPosition(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Aegisub Active Line:"))
+            {
+                result.getScriptinfo().setActiveLine(getValueAsInt(s));
+                continue;
+            }
+            if (s.startsWith("Aegisub Video Zoom Percent:"))
+            {
+                result.getScriptinfo().setVideoZoom(getValueAsDouble(s));
+                continue;
+            }
+            if (s.startsWith("Aegisub Video Position:"))
+            {
+                result.getScriptinfo().setVideoPosition(getValueAsDouble(s));
+                continue;
+            }
+            if (s.startsWith("Video AR Mode:"))
+            {
+                result.getAegisubProjectGarbage().setArMode(getValueAsInt(s));
                 continue;
             }
             throw new SubtitleException(String.format("I do not understand this line: " + s));

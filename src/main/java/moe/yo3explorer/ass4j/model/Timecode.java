@@ -1,9 +1,10 @@
 package moe.yo3explorer.ass4j.model;
 
 import moe.yo3explorer.ass4j.SubtitleException;
+import moe.yo3explorer.ass4j.TimecodeComparator;
 import org.jetbrains.annotations.NotNull;
 
-public class Timecode
+public class Timecode implements Comparable<Timecode>
 {
     public Timecode(@NotNull String timecode, @NotNull TimecodeFormat format)
     {
@@ -155,5 +156,10 @@ public class Timecode
             default:
                 throw new SubtitleException("Unknown timecode format: " + format.toString());
         }
+    }
+
+    @Override
+    public int compareTo(@NotNull Timecode o) {
+        return new TimecodeComparator().compare(this,o);
     }
 }

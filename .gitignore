@@ -6,3 +6,6 @@ src/test/resources/QueenMillennia*
 src/test/resources/dillermand*
 dillermand*.ass
 dillermand*.srt
+/src/test/java/QueenMilleniaFixup.java
+*-LE-Subs.srt
+src/test/resources/qm/ep*eng.ass
