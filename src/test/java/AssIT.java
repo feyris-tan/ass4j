@@ -1,6 +1,8 @@
+import moe.yo3explorer.ass4j.SubstationAlphaStripper;
 import moe.yo3explorer.ass4j.SubtitleFile;
 import moe.yo3explorer.ass4j.formats.ass.AssReader;
 import moe.yo3explorer.ass4j.formats.vtt.VttReader;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.AssumptionViolatedException;
 import org.junit.Test;
@@ -8,7 +10,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AssTest
+public class AssIT
 {
     @Test
     public void queenMillenniaMovie() throws IOException {
@@ -90,7 +92,8 @@ public class AssTest
         runAssTest("MatrixTVFCC.ass");
     }
 
-    private void runAssTest(String name) throws IOException {
+    @NotNull
+    private SubtitleFile runAssTest(String name) throws IOException {
         InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(name);
         if (resourceAsStream == null)
         {
@@ -98,5 +101,15 @@ public class AssTest
         }
         SubtitleFile subtitleFile = AssReader.parseAssFile(resourceAsStream);
         Assert.assertNotNull(subtitleFile);
+        return subtitleFile;
+    }
+
+    @Test
+    public void cleanerTest() throws IOException {
+        SubtitleFile subtitleFile = runAssTest("cleaner/19c24e62-f420-46b0-88ca-5ad6a59dfd2d.ass");
+        SubstationAlphaStripper.strip(subtitleFile);
+
+        SubtitleFile subtitleFile1 = runAssTest("cleaner/7341e49d-3382-49c5-b43e-4b4441957528.ass");
+        SubstationAlphaStripper.strip(subtitleFile1);
     }
 }

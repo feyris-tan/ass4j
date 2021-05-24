@@ -100,4 +100,15 @@ public class Event {
     public String getText() {
         return text;
     }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "eventType=" + eventType +
+                ", start=" + start +
+                ", speaker='" + speaker + '\'' +
+                ", effect='" + effect + '\'' +
+                ", text='" + text + '\'' +
+                '}';
+    }
 }

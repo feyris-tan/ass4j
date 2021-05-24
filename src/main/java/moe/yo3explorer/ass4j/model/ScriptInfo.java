@@ -5,6 +5,7 @@ public class ScriptInfo {
     private String sabbuVersion;
     private int scrollPosition;
     private int activeLine;
+    private String keyframesFile;
 
     public void autoSetReasonableDefaults()
     {
@@ -267,5 +268,13 @@ public class ScriptInfo {
 
     public int getActiveLine() {
         return activeLine;
+    }
+
+    public void setKeyframesFile(String keyframesFile) {
+        this.keyframesFile = keyframesFile;
+    }
+
+    public String getKeyframesFile() {
+        return keyframesFile;
     }
 }

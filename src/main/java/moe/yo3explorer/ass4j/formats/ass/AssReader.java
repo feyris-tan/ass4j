@@ -219,6 +219,11 @@ public final class AssReader
                 subtitleFile.getScriptinfo().setVideoZoom(getValueAsDouble(s));
                 continue;
             }
+            if (s.startsWith("Keyframes File:"))
+            {
+                subtitleFile.getScriptinfo().setKeyframesFile(getValue(s));
+                continue;
+            }
             throw new SubtitleException(String.format("I do not understand this line: " + s));
         }
     }
